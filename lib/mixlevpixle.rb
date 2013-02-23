@@ -3,14 +3,20 @@ require "mixlevpixle/version"
 module Mixlevpixle
 
   class Store
+    
+    TIMESTAMP_SUFFIX = '::timestamps'
 
-    def load(key, obj)
-      robj = get(key) || obj
+    def load(key, obj, *timestamps)
+      unless robj = get(key) and saved_timestamps = get(key + TIMESTAMP_SUFFIX) and timestamps.size == saved_timestamps.size and (0...timestamps.size).all?{|i| timestamps[i] <= saved_timestamps[i]}
+        robj = obj
+      end
+      
       robj.define_singleton_method :mixle_key do
         key
       end
       store_object = self
       robj.define_singleton_method :mixle do
+        store_object.set(mixle_key + TIMESTAMP_SUFFIX, timestamps)
         store_object.save(mixle_key, self)
       end
       robj
