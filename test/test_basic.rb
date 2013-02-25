@@ -10,11 +10,24 @@ class TestBasic < MiniTest::Unit::TestCase
     @mixle.delete('my-obj-here')
   end
   
+  def test_usage
+    # first run
+    myobj1 = @mixle.load('my-obj-here', {})
+    myobj1['a'] = 'b'
+    myobj1.mixle
+    
+    # second run
+    myobj2 = @mixle.load('my-obj-here', {})
+    assert_equal({'a'=>'b'}, myobj2)
+  end
+  
   def test1
     myobj = {}
     assert_equal({}, myobj)
+    
     myobj = @mixle.load('my-obj-here', myobj)
     assert_equal({}, myobj)
+    
     myobj['a'] = 'b'
     assert_equal({'a'=>'b'}, myobj)
     @mixle.save 'my-obj-here', myobj
