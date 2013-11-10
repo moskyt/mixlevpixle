@@ -7,7 +7,7 @@ module Mixlevpixle
     TIMESTAMP_SUFFIX = '::timestamps'
 
     def load(key, obj, *timestamps)
-      unless robj = get(key) and saved_timestamps = get(key + TIMESTAMP_SUFFIX) and timestamps.size == saved_timestamps.size and (0...timestamps.size).all?{|i| timestamps[i] <= saved_timestamps[i]}
+      unless robj = get(key) and saved_timestamps = get(key + TIMESTAMP_SUFFIX) and (timestamps.empty? or timestamps.size == saved_timestamps.size and (0...timestamps.size).all?{|i| timestamps[i] <= saved_timestamps[i]})
         robj = obj
       end
       
