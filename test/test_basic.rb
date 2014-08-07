@@ -3,7 +3,7 @@ require_relative './test_helper'
 class TestBasic < MiniTest::Unit::TestCase
   
   def setup
-    @mixle = Mixlevpixle::DalliStore.new('mixle_test')
+    @mixle = Mixlevpixle::DalliStore.new('mixle_test', :value_max_bytes => 32*1024*1024)
   end
   
   def teardown

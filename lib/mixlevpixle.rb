@@ -68,9 +68,11 @@ module Mixlevpixle
 
     require 'dalli'
 
-    def initialize(namespace, host = 'localhost', port = 11211)
+    def initialize(namespace, options = {})
+      host = options.delete(:host) || 'localhost'
+      port = options.delete(:port) || 11211
       @namespace = namespace.dup
-      @dalli_client = Dalli::Client.new("#{host}:#{port}")
+      @dalli_client = Dalli::Client.new("#{host}:#{port}", options)
     end
 
     def set(key, value)
