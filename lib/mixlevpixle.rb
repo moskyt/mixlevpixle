@@ -3,7 +3,7 @@ require "mixlevpixle/version"
 module Mixlevpixle
 
   class Store
-    
+
     TIMESTAMP_SUFFIX = '::timestamps'
 
     def load(key, obj, *timestamps)
@@ -30,11 +30,18 @@ module Mixlevpixle
       end
 
       if store_status
-        robj = obj 
+        if block_given?
+          robj = yield
+          self.set(key + TIMESTAMP_SUFFIX, timestamps)
+          self.save(key, robj)
+          return robj
+        else
+          robj = obj
+        end
       else
         store_status = :ok
       end
-      
+
       robj.define_singleton_method :mixle_key do
         key
       end
@@ -54,10 +61,10 @@ module Mixlevpixle
 
     def save(key, obj)
       class <<obj
-         remove_method :mixle
-         remove_method :mixle_key
-         remove_method :mixle_status
-         remove_method :mixle_error
+         remove_method :mixle rescue NameError
+         remove_method :mixle_key rescue NameError
+         remove_method :mixle_status rescue NameError
+         remove_method :mixle_error rescue NameError
       end
       set(key, obj)
     end
